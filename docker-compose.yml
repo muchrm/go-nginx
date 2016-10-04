@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+### Go Container #######################################
+
+    golang:
+        container_name: golang
+        build:
+            context: ./golang
+        volumes:
+            - ./workspace/web:/go/src/github.com/muchrm/goweb
+        expose:
+            - "8080"
+
+### Nginx Server Container ##################################
+    nginx:
+        container_name: nginx
+        build:
+            context: ./nginx
+            args:
+                - GO_UPSTREAM=golang
+        volumes:
+            - ./workspace/web:/var/www/html
+        ports:
+            - "80:80"
+            - "443:443"
+        links:
+            - golang
